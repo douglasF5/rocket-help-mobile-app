@@ -22,6 +22,7 @@ export function Header({ title, ...rest }: HeaderProps) {
         bg='gray.600'
         pb={6}
         pt={12}
+        px={6}
         {...rest}
     >
         <IconButton
@@ -29,7 +30,7 @@ export function Header({ title, ...rest }: HeaderProps) {
             onPress={handleGoBack}
         />
 
-        <Heading color='gray.100' textAlign='center' fontSize='lg' flex={1} ml={-6}>
+        <Heading color='gray.100' textAlign='center' fontSize='lg' flex={1} mr={6}>
             {title}
         </Heading>
     </HStack>
