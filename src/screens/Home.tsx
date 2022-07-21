@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { HStack, IconButton, VStack, useTheme, Text, Heading, FlatList, Center } from 'native-base';
 import { SignOut, ChatTeardropText } from 'phosphor-react-native';
 import Logo from '../assets/logo_secondary.svg';
@@ -10,14 +11,24 @@ import { Button } from '../components/Button';
 export function Home() {
     const { colors } = useTheme();
     const [statusSelected, setStatusSelected] = useState<'open' | 'closed'>('open');
-    const [tickets, setTickets] = useState<TicketProps[]>([]);
+    const [tickets, setTickets] = useState<TicketProps[]>([
+        {
+            id: '123',
+            patrimony: '123456',
+            when: '18/07/2022 at 10:00',
+            status: 'open'
+        }
+    ]);
 
-    // {
-    //     id: '123',
-    //     patrimony: '123456',
-    //     when: '18/07/2022 at 10:00',
-    //     status: 'open'
-    // }
+    const navigation = useNavigation();
+    function handleNewRequest() {
+        navigation.navigate('newRequest');
+    }
+
+    function handleSeeDetails(ticketId: string) {
+        navigation.navigate('details', { ticketId });
+    }
+    
 
     return (
         <VStack flex={1} pb={6} bg='gray.700'>
@@ -62,7 +73,7 @@ export function Home() {
                 <FlatList
                     data={tickets}
                     keyExtractor={item => item.id}
-                    renderItem={({ item }) => <Ticket data={item} />}
+                    renderItem={({ item }) => <Ticket data={item} onPress={() => handleSeeDetails(item.id)} />}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
                         paddingBottom: 100
@@ -77,7 +88,7 @@ export function Home() {
                         </Center>
                     )}
                 />
-                <Button title='New request'/>
+                <Button title='New request' onPress={handleNewRequest}/>
             </VStack>
         </VStack>
   );
