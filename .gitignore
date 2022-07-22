@@ -113,4 +113,8 @@ buck-out/
 web-build/
 dist/
 
+# Firebase
+google-services.json
+*.plist
+
 # @end expo-cli
