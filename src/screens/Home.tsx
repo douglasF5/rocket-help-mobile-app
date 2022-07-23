@@ -1,4 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import { Alert } from 'react-native';
 import { HStack, IconButton, VStack, useTheme, Text, Heading, FlatList, Center } from 'native-base';
 import { SignOut, ChatTeardropText } from 'phosphor-react-native';
 import Logo from '../assets/logo_secondary.svg';
@@ -21,12 +23,22 @@ export function Home() {
     ]);
 
     const navigation = useNavigation();
+
     function handleNewRequest() {
         navigation.navigate('newRequest');
     }
 
     function handleSeeDetails(ticketId: string) {
         navigation.navigate('details', { ticketId });
+    }
+
+    function handgleLogOut() {
+        auth()
+            .signOut()
+            .catch(err => {
+                console.log(err);
+                return Alert.alert('Log out', 'It wasn\'t possible to log you out.');
+            });
     }
     
 
@@ -43,7 +55,8 @@ export function Home() {
             >
                 <Logo />
                 <IconButton
-                    icon={<SignOut size={26} color={colors.gray[300]} />}
+                    icon={<SignOut size={26} color={colors.gray[300]}/>}
+                    onPress={handgleLogOut}
                 />
             </HStack>
             <VStack flex={1} px={6}>

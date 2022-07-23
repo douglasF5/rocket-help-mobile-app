@@ -25,7 +25,22 @@ export function SignIn() {
         .catch((err) => {
             console.log(err);
             setIsLoading(false);
+
+            if(err.code === 'auth/invalid-email') {
+                return Alert.alert('Sign in', 'Invalid email or password.')
+            }
+
+            if(err.code === 'auth/wrong-password') {
+                return Alert.alert('Sign in', 'Invalid email or password.')
+            }
+
+            if(err.code === 'auth/user-not-found') {
+                return Alert.alert('Sign in', 'User not found.')
+            }
+
+            return Alert.alert('Sign In', 'It wasn\'t possible to log you in');
         });
+
     }
 
     return (
