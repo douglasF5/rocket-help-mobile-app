@@ -47,11 +47,11 @@ export function Home() {
             .where('status', '==', statusSelected)
             .onSnapshot(snapshot => {
                 const data = snapshot.docs.map(doc => {
-                    const { patrimony, description, status, created_at } = doc.data();
+                    const { asset, description, status, created_at } = doc.data();
 
                     return {
                         id: doc.id,
-                        patrimony,
+                        asset,
                         description,
                         status,
                         when: dateFormat(created_at)

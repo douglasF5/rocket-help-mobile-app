@@ -67,13 +67,13 @@ export function Details() {
       .doc(ticketId)
       .get()
       .then((doc) => {
-        const { patrimony, description, status, created_at, closed_at, solution } = doc.data();
+        const { asset, description, status, created_at, closed_at, solution } = doc.data();
 
         const closed = closed_at ? dateFormat(closed_at) : null;
 
         setTicket({
           id: doc.id,
-          patrimony,
+          asset,
           description,
           status,
           solution,
@@ -91,7 +91,7 @@ export function Details() {
 
   return (
     <VStack flex={1} bg='gray.700'>
-      <Header title='Request details' />
+      <Header title='Ticket details' />
       <HStack
         bg='gray.500'
         justifyContent='center'
@@ -119,7 +119,7 @@ export function Details() {
       >
         <CardDetails
           title='Equipment'
-          description={`Patrimony ${ticket.patrimony}`}
+          description={`Asset ${ticket.asset}`}
           icon={DesktopTower}
         />
         <CardDetails

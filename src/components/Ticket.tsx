@@ -3,7 +3,7 @@ import { ClockAfternoon, Hourglass, CircleWavyCheck } from 'phosphor-react-nativ
 
 export type TicketProps = {
     id: string;
-    patrimony: string;
+    asset: string;
     when: string;
     status: 'open' | 'closed';
 }
@@ -29,7 +29,7 @@ export function Ticket({ data, ...rest }: Props) {
             <Box h='full' w={2} bg={statusColor}/>
             <VStack flex={1} my={5} ml={5} >
                 <Text color='white' fontSize='md'>
-                    Patrimony {data.patrimony}
+                    Asset {data.asset}
                 </Text>
                 <HStack alignItems='center'>
                     <ClockAfternoon size={15} color={colors.gray[300]}/>

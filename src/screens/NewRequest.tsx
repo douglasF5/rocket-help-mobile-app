@@ -9,13 +9,13 @@ import { useNavigation } from '@react-navigation/native';
 
 export function NewRequest() {
   const [isLoading, setIsLoading] = useState(false);
-  const [patrimony, setPatrimony] = useState('');
+  const [asset, setAsset] = useState('');
   const [description, setDescription] = useState('');
 
   const navigation = useNavigation();
 
   function handleNewRequest() {
-    if(!patrimony || !description) {
+    if(!asset || !description) {
       return Alert.alert('New request', 'Fill in all fields.');
     }
 
@@ -24,7 +24,7 @@ export function NewRequest() {
     firestore()
       .collection('requests')
       .add({
-        patrimony,
+        asset,
         description,
         status: 'open',
         created_at: firestore.FieldValue.serverTimestamp()
@@ -42,12 +42,12 @@ export function NewRequest() {
 
   return (
     <VStack flex={1} bg='gray.600'>
-      <Header title='Request'/>
+      <Header title='New request'/>
       <VStack flex={1}  p={6} >
           <Input
-              placeholder='Patrimony code'
+              placeholder='Asset code'
               mt={4}
-              onChangeText={setPatrimony}
+              onChangeText={setAsset}
           />
           <Input
               placeholder='Describe your request'

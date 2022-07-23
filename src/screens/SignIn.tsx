@@ -52,7 +52,7 @@ export function SignIn() {
                 mt={20}
                 mb={6}
             >
-                Acces your account
+                Access your account
             </Heading>
             <Input
                 mb={4}

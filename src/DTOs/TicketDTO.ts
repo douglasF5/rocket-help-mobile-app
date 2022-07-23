@@ -1,7 +1,7 @@
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 export type TicketFirestoreDTO = {
-    patrimony: string;
+    asset: string;
     description: string;
     status: 'open' | 'closed';
     solution?: string;
