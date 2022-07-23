@@ -1,26 +1,24 @@
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 import { Alert } from 'react-native';
 import { HStack, IconButton, VStack, useTheme, Text, Heading, FlatList, Center } from 'native-base';
 import { SignOut, ChatTeardropText } from 'phosphor-react-native';
 import Logo from '../assets/logo_secondary.svg';
 import { Filter } from '../components/Filter';
 import { Ticket, TicketProps } from '../components/Ticket';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../components/Button';
+import { Loading } from '../components/Loading';
+import { dateFormat } from '../utils/firestoreDateFormat';
 
 
 export function Home() {
     const { colors } = useTheme();
+    const [isLoading, setIsLoading] = useState(true);
+    const [ticketsCount, setTicketsCount] = useState(0);
     const [statusSelected, setStatusSelected] = useState<'open' | 'closed'>('open');
-    const [tickets, setTickets] = useState<TicketProps[]>([
-        {
-            id: '123',
-            patrimony: '123456',
-            when: '18/07/2022 at 10:00',
-            status: 'open'
-        }
-    ]);
+    const [tickets, setTickets] = useState<TicketProps[]>([]);
 
     const navigation = useNavigation();
 
@@ -32,7 +30,7 @@ export function Home() {
         navigation.navigate('details', { ticketId });
     }
 
-    function handgleLogOut() {
+    function handleLogOut() {
         auth()
             .signOut()
             .catch(err => {
@@ -40,8 +38,32 @@ export function Home() {
                 return Alert.alert('Log out', 'It wasn\'t possible to log you out.');
             });
     }
-    
 
+    useEffect(() => {
+        setIsLoading(true);
+
+        const subscriber = firestore()
+            .collection('requests')
+            .where('status', '==', statusSelected)
+            .onSnapshot(snapshot => {
+                const data = snapshot.docs.map(doc => {
+                    const { patrimony, description, status, created_at } = doc.data();
+
+                    return {
+                        id: doc.id,
+                        patrimony,
+                        description,
+                        status,
+                        when: dateFormat(created_at)
+                    }
+                });
+                setTickets(data);
+                setTicketsCount(data.length)
+                setIsLoading(false);
+            });
+        return subscriber;
+    }, [statusSelected]);
+    
     return (
         <VStack flex={1} pb={6} bg='gray.700'>
             <HStack
@@ -56,16 +78,16 @@ export function Home() {
                 <Logo />
                 <IconButton
                     icon={<SignOut size={26} color={colors.gray[300]}/>}
-                    onPress={handgleLogOut}
+                    onPress={handleLogOut}
                 />
             </HStack>
             <VStack flex={1} px={6}>
                 <HStack w='full' mt={8} mb={4} justifyContent='space-between' alignItems='center'>
                     <Heading color='gray.100'>
-                        Meus chamados
+                        My requests
                     </Heading>
                     <Text color='gray.200'>
-                        3
+                        {ticketsCount}
                     </Text>
 
                 </HStack>
@@ -77,30 +99,34 @@ export function Home() {
                         isActive={statusSelected === 'open'}
                     />
                     <Filter
-                        title='Finished'
+                        title='Closed'
                         type='closed'
                         onPress={() => setStatusSelected('closed')}
                         isActive={statusSelected === 'closed'}
                     />
                 </HStack>
-                <FlatList
-                    data={tickets}
-                    keyExtractor={item => item.id}
-                    renderItem={({ item }) => <Ticket data={item} onPress={() => handleSeeDetails(item.id)} />}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingBottom: 100
-                    }}
-                    ListEmptyComponent={() => (
-                        <Center>
-                            <ChatTeardropText color={colors.gray[400]} size={40} />
-                            <Text color='gray.300' mt={6} textAlign='center' fontSize={16}>
-                                You don't have {'\n'}
-                                {statusSelected === 'open' ? 'open' : 'closed'} tickets
-                            </Text>
-                        </Center>
-                    )}
-                />
+                {
+                    isLoading
+                        ? <Loading />
+                        : <FlatList
+                                data={tickets}
+                                keyExtractor={item => item.id}
+                                renderItem={({ item }) => <Ticket data={item} onPress={() => handleSeeDetails(item.id)} />}
+                                showsVerticalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    paddingBottom: 100
+                                }}
+                                ListEmptyComponent={() => (
+                                    <Center>
+                                        <ChatTeardropText color={colors.gray[400]} size={40} />
+                                        <Text color='gray.300' mt={6} textAlign='center' fontSize={16}>
+                                            You don't have {'\n'}
+                                            {statusSelected === 'open' ? 'open' : 'closed'} tickets
+                                        </Text>
+                                    </Center>
+                                )}
+                            />
+                }
                 <Button title='New request' onPress={handleNewRequest}/>
             </VStack>
         </VStack>
