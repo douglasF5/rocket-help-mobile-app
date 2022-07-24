@@ -1,5 +1,7 @@
 # Rocket Help mobile app - Exercise from Ignite Lab 3 React Native.
 
+Rocket Help is a mobile help desk app made with React Native.
+
 Tools:
 
 - React Native
